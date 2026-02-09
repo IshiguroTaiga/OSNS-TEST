@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header';
-import { Navigation } from './components/Navigation';
-import { Home } from './components/Home';
-import { AIChat } from './components/AIChat';
-import { CourseExplorer } from './components/CourseExplorer';
-import { TutorNetwork } from './components/TutorNetwork';
-import { SettingsModal } from './components/SettingsModal';
-import { UserProfile, College, ChatMode } from './types';
+import { Header } from './components/Header.tsx';
+import { Navigation } from './components/Navigation.tsx';
+import { Home } from './components/Home.tsx';
+import { AIChat } from './components/AIChat.tsx';
+import { CourseExplorer } from './components/CourseExplorer.tsx';
+import { TutorNetwork } from './components/TutorNetwork.tsx';
+import { SettingsModal } from './components/SettingsModal.tsx';
+import { UserProfile, College, ChatMode } from './types.ts';
 
 type Tab = 'chat' | 'courses' | 'tutors' | 'home';
 
