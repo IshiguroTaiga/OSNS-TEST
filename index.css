@@ -5,18 +5,21 @@
   --mmsu-gold: #FFD700;
   --mmsu-light-gold: #FFF2B2;
   --bg-color: #f8f9fa;
-  --text-color: #212529;
+  --text-color: #1a1a1a;
+  --text-muted: #6b7280;
   --card-bg: #ffffff;
-  --border-color: #dee2e6;
+  --border-color: #e5e7eb;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --header-text: #ffffff;
 }
 
 .dark-theme {
-  --bg-color: #111827;
-  --text-color: #f9fafb;
-  --card-bg: #1f2937;
-  --border-color: #374151;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --bg-color: #0f172a;
+  --text-color: #f8fafc;
+  --text-muted: #94a3b8;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 body {
@@ -31,13 +34,13 @@ body {
 
 .mmsu-header {
   background-color: var(--mmsu-green);
-  color: white;
-  padding: 1rem 0;
+  color: var(--header-text);
+  padding: 0.75rem 0;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1050;
   box-shadow: var(--shadow);
-  border-bottom: 2px solid var(--mmsu-gold);
+  border-bottom: 3px solid var(--mmsu-gold);
 }
 
 .stallion-card {
@@ -47,44 +50,70 @@ body {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--shadow);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: var(--text-color);
 }
 
 .stallion-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.stallion-card h1, .stallion-card h2, .stallion-card h3, .stallion-card h4, .stallion-card h5, .stallion-card h6 {
+  color: var(--text-color) !important;
+}
+
+.stallion-card p {
+  color: var(--text-muted) !important;
 }
 
 .btn-mmsu {
   background-color: var(--mmsu-green);
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 0.8rem;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-mmsu:hover {
   background-color: var(--mmsu-dark-green);
-  color: white;
+  color: #ffffff;
+  transform: scale(1.02);
 }
 
+/* Fix for Start AI Consult visibility */
 .btn-gold {
-  background-color: var(--mmsu-gold);
-  color: var(--mmsu-green);
-  font-weight: 800;
+  background-color: var(--mmsu-gold) !important;
+  color: var(--mmsu-green) !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(255, 215, 0, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-gold:hover {
+  background-color: #ffe033 !important;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 
 .mmsu-banner {
   background: linear-gradient(135deg, var(--mmsu-green) 0%, var(--mmsu-dark-green) 100%);
   color: white;
   padding: 3rem;
-  border-radius: 2rem;
+  border-radius: 2.5rem;
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 40px rgba(1, 68, 33, 0.2);
 }
 
 .chat-container {
@@ -112,27 +141,21 @@ body {
   margin-bottom: 1.25rem;
   font-size: 0.92rem;
   line-height: 1.55;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
 .user-message {
   background-color: var(--mmsu-green);
-  color: white;
+  color: #ffffff;
   margin-left: auto;
   border-bottom-right-radius: 0.2rem;
 }
 
 .ai-message {
-  background-color: white;
-  color: #333;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   border: 1px solid var(--border-color);
   margin-right: auto;
   border-bottom-left-radius: 0.2rem;
-}
-
-.dark-theme .ai-message {
-  background-color: #374151;
-  color: white;
 }
 
 .bottom-nav {
@@ -152,7 +175,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #9ca3af;
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 0.65rem;
   font-weight: 700;
@@ -160,6 +183,7 @@ body {
   border: none;
   background: none;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .nav-item.active {
@@ -183,4 +207,24 @@ body {
   animation: fadeIn 0.4s ease-out forwards;
 }
 
+.clickable {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
 .fw-black { font-weight: 900; }
+
+.text-mmsu-gold { color: var(--mmsu-gold) !important; }
+
+/* Ensure modal text is readable */
+.modal-content {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
