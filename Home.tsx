@@ -12,11 +12,9 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigateToChat }) => {
   const isDark = user.theme === 'dark';
 
   const stallionTools = [
-    { icon: 'fa-user-graduate', label: 'Admission Portal', desc: 'Apply for SY 2026-2027', color: 'bg-indigo-600', url: 'https://pams.mmsu.edu.ph/' },
-    { icon: 'fa-receipt', label: 'Tuition Assessment', desc: '2nd Sem Balance', color: 'bg-emerald-600', url: 'https://my.mmsu.edu.ph/' },
+    { icon: 'fa-globe-asia', label: 'Official Site', desc: 'Main university web', color: 'bg-mmsu-green', url: 'https://www.mmsu.edu.ph/' },
     { icon: 'fa-graduation-cap', label: 'MVLE Learning', desc: 'Online Class Portal', color: 'bg-orange-600', url: 'https://mvle4.mmsu.edu.ph/my/' },
-    { icon: 'fa-file-signature', label: 'Registrar Requests', desc: 'TOR, Certifications', color: 'bg-rose-600', url: 'https://registrar.mmsu.edu.ph/' },
-    { icon: 'fa-globe-asia', label: 'MMSU Official Site', desc: 'Main university web', color: 'bg-mmsu-green', url: 'https://www.mmsu.edu.ph/' }
+    { icon: 'fa-user-circle', label: 'Student Portal', desc: 'Enrollment & Grades', color: 'bg-emerald-600', url: 'https://mys.mmsu.edu.ph/' },
   ];
 
   const handleToolClick = (url: string) => {
