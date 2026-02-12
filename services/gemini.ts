@@ -1,5 +1,5 @@
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ChatMode, GroundingLink } from "../types";
 
 const GET_SYSTEM_INSTRUCTION = (mode: ChatMode, college?: string, studentId?: string) => {
