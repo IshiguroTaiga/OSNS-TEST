@@ -296,9 +296,9 @@ const App = () => {
 
   useEffect(() => {
     localStorage.setItem('stallion_app_final_v1', JSON.stringify(user));
-    // Apply theme classes to body for custom CSS and to documentElement for Tailwind
+    // Apply theme classes to documentElement for full-page effect
     const themeClass = user.theme === 'dark' ? 'dark-theme' : 'light-theme';
-    document.body.className = themeClass;
+    document.documentElement.className = themeClass;
     document.documentElement.classList.toggle('dark', user.theme === 'dark');
   }, [user]);
 
