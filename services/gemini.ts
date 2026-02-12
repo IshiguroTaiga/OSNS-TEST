@@ -1,5 +1,5 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { ChatMode, GroundingLink } from "../types";
 
 const GET_SYSTEM_INSTRUCTION = (mode: ChatMode, college?: string, studentId?: string) => {
@@ -44,28 +44,54 @@ export async function getAIResponse(
   history?: Array<{role: 'user' | 'assistant', content: string}>
 ): Promise<{ text: string; links?: GroundingLink[] }> {
   try {
-    const genAI = new GoogleGenerativeAI(process.env.API_KEY || '');
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: GET_SYSTEM_INSTRUCTION(mode, college, studentId)
+    const apiKey = process.env.API_KEY;
+    
+    if (!apiKey) {
+      console.error("STALLION AI ERROR: API Key is missing. If you are on GitHub Pages, process.env.API_KEY is not being injected correctly.");
+      return { 
+        text: "System connection error: The AI core is not responding because the API key is not configured in this environment. Please ensure you are accessing via the official preview link." 
+      };
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    
+    const contents: any[] = history?.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }]
+    })) || [];
+
+    contents.push({
+      role: 'user',
+      parts: [{ text: prompt }]
     });
 
-    const chat = model.startChat({
-      history: history?.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-      })) || [],
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents,
+      config: {
+        systemInstruction: GET_SYSTEM_INSTRUCTION(mode, college, studentId),
+        tools: [{ googleSearch: {} }],
+        temperature: 0.7,
+      },
     });
 
-    const result = await chat.sendMessage(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = response.text || "I apologize, but I am currently unable to process your inquiry.";
+    
+    // Extract grounding links from search results
+    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+    const links: GroundingLink[] = groundingChunks
+      .filter(chunk => chunk.web)
+      .map(chunk => ({
+        title: chunk.web?.title || 'MMSU Reference',
+        uri: chunk.web?.uri || '',
+        type: 'search'
+      }));
 
-    return { text, links: [] }; // Grounding links are more complex with this SDK
+    return { text, links };
   } catch (error) {
     console.error("Gemini API Error:", error);
     return { 
-      text: "The university server is experiencing high traffic. Please try again later." 
+      text: "The university server is experiencing high traffic. Please try again later or consult the official MMSU student portal." 
     };
   }
 }
