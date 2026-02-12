@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -58,17 +57,23 @@ async function getAIResponse(prompt: string, college: string, mode: ChatMode, st
     })) || [];
     contents.push({ role: 'user', parts: [{ text: prompt }] });
 
-    const systemInstruction = `You are the "MMSU Stallion AI Companion". Context: Mariano Marcos State University. Date: Jan 20, 2026 (Foundation Day). User is from ${college}. Mode: ${mode}. StudentID: ${studentId || 'Guest'}. Tone: Professional, scholarly, and supportive. Use university-specific knowledge. Today is a celebration day!`;
+    const systemInstruction = `You are the "MMSU Stallion AI Companion". Context: Mariano Marcos State University. Current Date: Jan 20, 2026 (Foundation Day). User is from ${college}. Mode: ${mode}. StudentID: ${studentId || 'Guest'}. Tone: Professional, scholarly, and supportive. Use university-specific knowledge. Today is a celebration day!`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents,
-      config: { systemInstruction, tools: [{ googleSearch: {} }] }
+      config: { 
+        systemInstruction, 
+        tools: [{ googleSearch: {} }] 
+      }
     });
 
     const text = response.text || "I'm having a bit of trouble connecting right now.";
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-    const links = groundingChunks.filter(c => c.web).map(c => ({ title: c.web?.title || 'External Link', uri: c.web?.uri || '#' }));
+    const links = groundingChunks.filter(c => c.web).map(c => ({ 
+      title: c.web?.title || 'External Reference', 
+      uri: c.web?.uri || '#' 
+    }));
 
     return { text, links };
   } catch (e) {
@@ -291,7 +296,10 @@ const App = () => {
 
   useEffect(() => {
     localStorage.setItem('stallion_app_final_v1', JSON.stringify(user));
-    document.body.className = user.theme === 'dark' ? 'dark-theme' : 'light-theme';
+    // Apply theme classes to body for custom CSS and to documentElement for Tailwind
+    const themeClass = user.theme === 'dark' ? 'dark-theme' : 'light-theme';
+    document.body.className = themeClass;
+    document.documentElement.classList.toggle('dark', user.theme === 'dark');
   }, [user]);
 
   return (
