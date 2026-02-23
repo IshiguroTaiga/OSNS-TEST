@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { UserProfile, Tab, ChatMode } from './types';
-import { Header } from './components/Header';
-import { Navigation } from './components/Navigation';
-import { Home } from './components/Home';
-import { AIChat } from './components/AIChat';
-import { CourseExplorer } from './components/CourseExplorer';
-import { TutorNetwork } from './components/TutorNetwork';
-import { SettingsModal } from './components/SettingsModal';
+import { Header } from './Components/Header';
+import { Navigation } from './Components/Navigation';
+import { Home } from './Components/Home';
+import { AIChat } from './Components/AIChat';
+import { CourseExplorer } from './Components/CourseExplorer';
+import { TutorNetwork } from './Components/TutorNetwork';
+import { SettingsModal } from './Components/SettingsModal';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('home');
