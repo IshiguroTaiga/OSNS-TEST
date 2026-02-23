@@ -26,6 +26,14 @@
         {
           "key": "Content-Type",
           "value": "text/css; charset=utf-8"
+          {
+  "functions": {
+    "app/api/**/*.js": {
+      "includeFiles": "node_modules/@google/genai/**"
+    }
+  }
+}
+
         }
       ]
     }
