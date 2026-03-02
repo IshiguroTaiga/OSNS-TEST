@@ -49,7 +49,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ user, onUpdate, on
               type="text" 
               placeholder="e.g. 21-123456"
               value={studentId} 
-              onChange={(e) => setStudentId(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9-]/g, '');
+                setStudentId(val);
+              }}
               className={`w-full p-4 rounded-2xl border ${user.theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} font-black tracking-widest focus:ring-2 focus:ring-mmsu-green outline-none transition-all`}
             />
           </div>
