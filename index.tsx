@@ -78,7 +78,7 @@ const MOCK_CALENDAR_EVENTS = [
   { id: 'e20', date: '2026-12-24', title: 'Christmas Eve', type: 'holiday' },
   { id: 'e21', date: '2026-12-25', title: 'Christmas Day', type: 'holiday' },
   { id: 'e22', date: '2026-12-30', title: 'Rizal Day', type: 'holiday' },
-  { id: 'e22', date: '2026-12-31', title: 'New Years Eve', type: 'holiday' },
+  { id: 'e23', date: '2026-12-31', title: 'New Years Eve', type: 'holiday' },
 ];
 
 const Calendar = ({ isDark }: { isDark: boolean }) => {
