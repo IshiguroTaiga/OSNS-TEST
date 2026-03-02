@@ -7,7 +7,7 @@ import './index.css';
 // --- TYPES ---
 type Campus = 'Batac' | 'Laoag' | 'Currimao' | 'Dingras';
 type ChatMode = 'GENERAL' | 'TUTORING';
-type Tab = 'home' | 'chat' | 'courses' | 'tutors';
+type Tab = 'home' | 'chat' | 'calendar' | 'tutors';
 
 interface GroundingLink {
   title: string;
@@ -54,13 +54,141 @@ const MOCK_ANNOUNCEMENTS = [
   { id: 'a3', title: 'MMSU Foundation Day', date: 'Jan 20, 2026', content: 'Happy 48th Foundation Anniversary! Join us at the Sunken Garden for festivities.', category: 'Event' },
 ];
 
-const MOCK_COURSES = [
-  { id: 'c1', code: 'IT 101', title: 'Introduction to Computing', college: 'College of Computing and Information Sciences', description: 'Fundamental concepts of computer systems and logic.', credits: 3 },
-  { id: 'c2', code: 'AGRI 101', title: 'Crop Science', college: 'College of Agriculture, Food and Sustainable Development', description: 'Basics of plant growth and sustainable soil management.', credits: 3 },
-  { id: 'c3', code: 'ENGG 101', title: 'Engineering Graphics', college: 'College of Engineering', description: 'Principles of drafting, visualization, and CAD basics.', credits: 2 },
-  { id: 'c4', code: 'BIO 101', title: 'General Biology', college: 'College of Arts and Sciences', description: 'Comprehensive study of life from molecular to ecosystem levels.', credits: 4 },
-  { id: 'c5', code: 'CS 202', title: 'Data Structures', college: 'College of Computing and Information Sciences', description: 'Algorithm analysis and abstract data types.', credits: 3 },
+const MOCK_CALENDAR_EVENTS = [
+  { id: 'e1', date: '2026-03-20', title: 'EID AL-FITR (TENTATIVE)', type: 'holiday' },
+  { id: 'e2', date: '2026-04-02', title: 'MAUNDY THURSDAY', type: 'holiday' },
+  { id: 'e3', date: '2026-04-03', title: 'GOOD FRIDAY', type: 'holiday' },
+  { id: 'e4', date: '2026-04-04', title: 'BLACK SATURDAY', type: 'holiday' },
+  { id: 'e5', date: '2026-03-04', title: 'Midterm Examination Week', type: 'academic' },
+  { id: 'e6', date: '2026-03-05', title: 'Midterm Examination Week', type: 'academic' },
+  { id: 'e7', date: '2026-03-06', title: 'Midterm Examination Week', type: 'academic' },
+  { id: 'e8', date: '2026-03-25', title: 'University Convocation', type: 'event' },
 ];
+
+const Calendar = ({ isDark }: { isDark: boolean }) => {
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 2, 1)); // March 2026
+  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+  
+  const monthName = currentDate.toLocaleString('default', { month: 'long' });
+  const year = currentDate.getFullYear();
+
+  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  const goToToday = () => setCurrentDate(new Date(2026, 2, 1));
+
+  const calendarDays = [];
+  // Fill empty slots for previous month
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    calendarDays.push(null);
+  }
+  // Fill days of the month
+  for (let i = 1; i <= daysInMonth; i++) {
+    calendarDays.push(i);
+  }
+
+  const getEventsForDay = (day: number) => {
+    const dateStr = `${year}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    return MOCK_CALENDAR_EVENTS.filter(e => e.date === dateStr);
+  };
+
+  return (
+    <div className="space-y-8 animate-fadeIn">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+          <h2 className="text-4xl font-black tracking-tight flex items-center gap-3">
+            <i className="fas fa-calendar-alt text-mmsu-gold"></i>
+            Academic Calendar
+          </h2>
+          <p className="text-[11px] text-mmsu-gold font-black uppercase tracking-[0.3em] mt-2">Mariano Marcos State University</p>
+        </div>
+        
+        <div className="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-2xl border dark:border-white/5 shadow-sm">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden">
+            <button onClick={prevMonth} className="p-3 hover:bg-mmsu-gold hover:text-mmsu-green transition-all"><i className="fas fa-chevron-left"></i></button>
+            <button onClick={goToToday} className="px-6 py-3 font-black uppercase text-[10px] tracking-widest hover:bg-mmsu-gold hover:text-mmsu-green transition-all border-x dark:border-white/5">Today</button>
+            <button onClick={nextMonth} className="p-3 hover:bg-mmsu-gold hover:text-mmsu-green transition-all"><i className="fas fa-chevron-right"></i></button>
+          </div>
+          <div className="hidden sm:flex bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden">
+            <button className="px-4 py-3 font-black uppercase text-[9px] tracking-widest bg-mmsu-green text-white">Month</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-3xl border dark:border-white/5 overflow-hidden">
+        <div className="p-8 border-b dark:border-white/5 flex justify-center">
+          <h3 className="text-2xl font-black tracking-tight">{monthName} {year}</h3>
+        </div>
+        
+        <div className="grid grid-cols-7 border-b dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="py-4 text-center text-[10px] font-black uppercase tracking-widest text-slate-400 border-r last:border-r-0 dark:border-white/5">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 auto-rows-[120px] sm:auto-rows-[160px]">
+          {calendarDays.map((day, idx) => {
+            const events = day ? getEventsForDay(day) : [];
+            const isToday = day === 1 && monthName === 'March' && year === 2026; // Mocking today as March 1
+            
+            return (
+              <div key={idx} className={`p-2 sm:p-4 border-r border-b dark:border-white/5 relative group transition-colors ${day ? 'hover:bg-slate-50 dark:hover:bg-slate-900/30' : 'bg-slate-50/30 dark:bg-slate-900/10'}`}>
+                {day && (
+                  <>
+                    <span className={`text-xs font-black ${isToday ? 'w-7 h-7 bg-mmsu-gold text-mmsu-green rounded-full flex items-center justify-center shadow-lg' : 'text-slate-400'}`}>
+                      {day}
+                    </span>
+                    <div className="mt-2 space-y-1 overflow-hidden">
+                      {events.map(event => (
+                        <div 
+                          key={event.id} 
+                          className={`px-2 py-1 rounded-md text-[8px] sm:text-[9px] font-black uppercase tracking-tighter truncate ${
+                            event.type === 'holiday' ? 'bg-red-600 text-white' : 
+                            event.type === 'academic' ? 'bg-mmsu-green text-white' : 
+                            'bg-mmsu-gold text-mmsu-green'
+                          }`}
+                          title={event.title}
+                        >
+                          {event.title}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 rounded-3xl bg-red-600/10 border border-red-600/20 flex items-center gap-4">
+          <div className="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg"><i className="fas fa-umbrella-beach"></i></div>
+          <div>
+            <h4 className="font-black text-xs uppercase tracking-widest text-red-600">Holidays</h4>
+            <p className="text-[10px] font-medium opacity-60">Official non-working days</p>
+          </div>
+        </div>
+        <div className="p-6 rounded-3xl bg-mmsu-green/10 border border-mmsu-green/20 flex items-center gap-4">
+          <div className="w-12 h-12 bg-mmsu-green text-white rounded-xl flex items-center justify-center shadow-lg"><i className="fas fa-graduation-cap"></i></div>
+          <div>
+            <h4 className="font-black text-xs uppercase tracking-widest text-mmsu-green dark:text-mmsu-gold">Academic</h4>
+            <p className="text-[10px] font-medium opacity-60">Exams and enrollment</p>
+          </div>
+        </div>
+        <div className="p-6 rounded-3xl bg-mmsu-gold/10 border border-mmsu-gold/20 flex items-center gap-4">
+          <div className="w-12 h-12 bg-mmsu-gold text-mmsu-green rounded-xl flex items-center justify-center shadow-lg"><i className="fas fa-star"></i></div>
+          <div>
+            <h4 className="font-black text-xs uppercase tracking-widest text-mmsu-gold">Events</h4>
+            <p className="text-[10px] font-medium opacity-60">University-wide activities</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- AI SERVICE ---
 const GET_SYSTEM_PROMPT = (mode: ChatMode, college: string, studentId?: string) => `
@@ -81,7 +209,7 @@ const NavDock = ({ active, onSet }: { active: Tab, onSet: (t: Tab) => void }) =>
     {[
       { id: 'home', icon: 'fa-house', label: 'Home' },
       { id: 'chat', icon: 'fa-comment-dots', label: 'Chat' },
-      { id: 'courses', icon: 'fa-book', label: 'Catalog' },
+      { id: 'calendar', icon: 'fa-calendar-alt', label: 'Calendar' },
       { id: 'tutors', icon: 'fa-user-graduate', label: 'Tutor' }
     ].map(item => (
       <button key={item.id} onClick={() => onSet(item.id as Tab)} className={`flex flex-col items-center gap-1 transition-all ${active === item.id ? 'text-mmsu-gold scale-110 sm:scale-125' : 'text-slate-400 hover:text-mmsu-gold'}`}>
@@ -258,7 +386,8 @@ const App = () => {
                   {[
                     { label: 'Official Website', icon: 'fa-globe', url: 'https://www.mmsu.edu.ph' },
                     { label: 'MVLE', icon: 'fa-book-open', url: 'https://mvle4.mmsu.edu.ph' },
-                    { label: 'Student Portal', icon: 'fa-user-circle', url: 'https://mys.mmsu.edu.ph/v2/home' }
+                    { label: 'Student Portal', icon: 'fa-user-circle', url: 'https://mys.mmsu.edu.ph/v2/home' },
+                    { label: 'Scheduled Activities', icon: 'fa-calendar-check', url: 'https://sas.mmsu.edu.ph/calendar' }
                   ].map(tool => (
                     <button key={tool.label} onClick={() => window.open(tool.url)} className="flex items-center gap-5 p-6 rounded-[1.5rem] border bg-white dark:bg-slate-800 border-slate-100 dark:border-white/5 hover:border-mmsu-gold transition-all group text-left shadow-sm">
                       <div className="w-12 h-12 bg-mmsu-green text-white rounded-xl flex items-center justify-center group-hover:rotate-6 transition-transform shadow-lg"><i className={`fas ${tool.icon} text-lg`}></i></div>
@@ -348,33 +477,7 @@ const App = () => {
           </div>
         )}
 
-        {activeTab === 'courses' && (
-          <div className="space-y-10 animate-fadeIn">
-            <div className="flex flex-col md:flex-row justify-between items-end gap-8">
-              <div>
-                <h2 className="text-4xl font-black tracking-tight">University Catalog</h2>
-                <p className="text-[11px] text-mmsu-gold font-black uppercase tracking-[0.3em] mt-2">{user.college}</p>
-              </div>
-              <div className="relative w-full md:w-[400px]">
-                <i className="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input className="w-full pl-14 pr-6 py-4 rounded-[1.5rem] bg-white dark:bg-slate-800 border dark:border-white/5 text-sm shadow-sm focus:ring-2 focus:ring-mmsu-green outline-none" placeholder="Search course code or title..." />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {MOCK_COURSES.filter(c => c.college === user.college).map(course => (
-                <div key={course.id} className="p-8 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:border-mmsu-gold transition-all group">
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="text-[10px] font-black uppercase px-4 py-1.5 bg-mmsu-green/10 text-mmsu-green dark:text-mmsu-gold rounded-full tracking-widest border border-mmsu-green/20">{course.code}</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{course.credits} Units</span>
-                  </div>
-                  <h4 className="font-black text-xl mb-4 leading-tight">{course.title}</h4>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed italic mb-8">"{course.description}"</p>
-                  <button className="w-full py-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-mmsu-gold hover:text-mmsu-green transition-all shadow-sm">View Curriculum Data</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {activeTab === 'calendar' && <Calendar isDark={user.theme === 'dark'} />}
 
         {activeTab === 'tutors' && (
           <div className="max-w-5xl mx-auto space-y-12 animate-fadeIn text-center py-20">
