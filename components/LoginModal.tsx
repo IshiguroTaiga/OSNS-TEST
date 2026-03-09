@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface LoginModalProps {
@@ -43,10 +42,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, isDark
               type="text"
               value={id}
               onChange={(e) => {
-                const val = e.target.value.replace(/[^0-9-]/g, '');
-                setId(val);
+                const val = e.target.value.replace(/\D/g, '');
+                const formatted = val.length <= 2 ? val : `${val.slice(0, 2)}-${val.slice(2, 8)}`;
+                setId(formatted);
                 setError('');
               }}
+              maxLength={9}
               placeholder="e.g. 21-123456"
               className={`w-full rounded-2xl p-4 text-center text-lg font-black tracking-widest border transition-all ${
                 isDark ? 'bg-gray-900 border-gray-700 text-white placeholder:text-gray-700' : 'bg-gray-50 border-gray-200 placeholder:text-gray-300'
@@ -68,7 +69,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, isDark
             </button>
             <button 
               type="submit" 
-              className="flex-1 bg-mmsu-green text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-mmsu-green/20 hover:bg-mmsu-darkGreen"
+              disabled={!/^\d{2}-\d{6}$/.test(id)}
+              className="flex-1 bg-mmsu-green text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-mmsu-green/20 hover:bg-mmsu-darkGreen disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Verify
             </button>
