@@ -63,7 +63,7 @@ const MOCK_CALENDAR_EVENTS = [
   { id: 'e6', date: '2026-03-05', title: 'Midterm Examination Week', type: 'academic' },
   { id: 'e7', date: '2026-03-06', title: 'Midterm Examination Week', type: 'academic' },
   { id: 'e8', date: '2026-03-25', title: 'University Convocation', type: 'event' },
-  { id: 'e9', date: '2026-05-01', title: 'Labor Day', type: 'holiday' },,
+  { id: 'e9', date: '2026-05-01', title: 'Labor Day', type: 'holiday' },
   { id: 'e10', date: '2026-05-28', title: 'EID AL-ADHA DAY (TENTATIVE)', type: 'holiday' },
   { id: 'e11', date: '2026-06-12', title: 'INDEPENDENCE DAY', type: 'holiday' },
   { id: 'e12', date: '2026-06-17', title: 'AMUN JADID (TENTATIVE)', type: 'holiday' },
@@ -77,7 +77,6 @@ const MOCK_CALENDAR_EVENTS = [
   { id: 'e20', date: '2026-12-24', title: 'Christmas Eve', type: 'holiday' },
   { id: 'e21', date: '2026-12-25', title: 'Christmas Day', type: 'holiday' },
   { id: 'e22', date: '2026-12-30', title: 'Rizal Day', type: 'holiday' },
-  { id: 'e22', date: '2026-12-31', title: 'New Years Eve', type: 'holiday' },
   { id: 'e23', date: '2026-12-31', title: 'New Years Eve', type: 'holiday' },
 ];
 
@@ -284,6 +283,7 @@ const App = () => {
   });
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     localStorage.setItem('mmsu_stallion_profile', JSON.stringify(user));
@@ -293,6 +293,13 @@ const App = () => {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  }, [input]);
 
   const handleSend = async (customText?: string) => {
     const text = (customText || input).trim();
@@ -533,15 +540,22 @@ const App = () => {
                   <button key={q} onClick={() => handleSend(q)} className="px-3 py-1.5 sm:px-5 sm:py-2.5 bg-slate-100 dark:bg-slate-900/50 rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest border dark:border-white/10 hover:border-mmsu-gold transition-all">{q}</button>
                 ))}
               </div>
-              <div className="flex gap-2 sm:gap-4 p-2 sm:p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl sm:rounded-3xl border dark:border-white/10 focus-within:ring-2 focus-within:ring-mmsu-green transition-all shadow-inner">
-                <input 
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-xs sm:text-sm p-2 sm:p-4 outline-none font-medium" 
+              <div className="flex items-end gap-2 sm:gap-4 p-2 sm:p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl sm:rounded-3xl border dark:border-white/10 focus-within:ring-2 focus-within:ring-mmsu-green transition-all shadow-inner">
+                <textarea 
+                  ref={textareaRef}
+                  className="flex-1 bg-transparent border-none focus:ring-0 text-xs sm:text-sm p-2 sm:p-4 outline-none font-medium resize-none max-h-[200px] overflow-y-auto" 
                   placeholder={chatMode === 'TUTORING' ? "Explain a concept or policy..." : "Ask anything about MMSU..."}
+                  rows={1}
                   value={input} 
                   onChange={e => setInput(e.target.value)} 
-                  onKeyDown={e => e.key === 'Enter' && handleSend()} 
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }} 
                 />
-                <button onClick={() => handleSend()} disabled={isTyping} className="w-10 h-10 sm:w-14 sm:h-14 bg-mmsu-green text-white rounded-xl sm:rounded-[1.25rem] shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-20">
+                <button onClick={() => handleSend()} disabled={isTyping} className="w-10 h-10 sm:w-14 sm:h-14 bg-mmsu-green text-white rounded-xl sm:rounded-[1.25rem] shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-20 flex-shrink-0 mb-1">
                   <i className="fas fa-paper-plane text-base sm:text-lg"></i>
                 </button>
               </div>
