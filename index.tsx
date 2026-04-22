@@ -49,9 +49,9 @@ const COLLEGES = [
 ];
 
 const MOCK_ANNOUNCEMENTS = [
-  { id: 'a1', title: '2nd Semester Enrollment 2026', date: 'Jan 12, 2026', content: 'Final week for registration and subject loading via the new Student Portal. Stallions, ensure your accounts are cleared.', category: 'Enrollment' },
-  { id: 'a2', title: 'Scholarship Renewal Window', date: 'Jan 18, 2026', content: 'Submit grades to OSA for academic grant extensions. Deadline is Jan 30.', category: 'Scholarship' },
-  { id: 'a3', title: 'MMSU Foundation Day', date: 'Jan 20, 2026', content: 'Happy 48th Foundation Anniversary! Join us at the Sunken Garden for festivities.', category: 'Event' },
+  { id: 'a1', title: 'Midyear Enrollment 2026', date: 'Apr 15, 2026', content: 'Pre-registration for Midyear classes is now open. Stallions, check your portals for subject offerings.', category: 'Enrollment' },
+  { id: 'a2', title: 'Global Internship Program', date: 'Apr 20, 2026', content: 'Applications for the ASEAN Virtual Student Exchange are now open. Deadline is May 10.', category: 'Scholarship' },
+  { id: 'a3', title: 'Earth Day Summit', date: 'Apr 22, 2026', content: 'Join the university-wide tree planting and eco-summit at the MMSU Forest Reserve.', category: 'Event' },
 ];
 
 const MOCK_CALENDAR_EVENTS = [
@@ -66,6 +66,10 @@ const MOCK_CALENDAR_EVENTS = [
   { id: 'e9', date: '2026-05-01', title: 'Labor Day', type: 'holiday' },
   { id: 'e10', date: '2026-05-28', title: 'EID AL-ADHA DAY (TENTATIVE)', type: 'holiday' },
   { id: 'e11', date: '2026-06-12', title: 'INDEPENDENCE DAY', type: 'holiday' },
+  { id: 'e24', date: '2026-04-20', title: 'Finalization of Grades', type: 'academic' },
+  { id: 'e25', date: '2026-04-22', title: 'Earth Day Celebration', type: 'event' },
+  { id: 'e26', date: '2026-04-25', title: 'College Foundation Week', type: 'event' },
+  { id: 'e27', date: '2026-04-30', title: 'Deadline for Clearing Deficiencies', type: 'academic' },
   { id: 'e12', date: '2026-06-17', title: 'AMUN JADID (TENTATIVE)', type: 'holiday' },
   { id: 'e13', date: '2026-08-21', title: 'NINOY AQUINO DAY', type: 'holiday' },
   { id: 'e14', date: '2026-08-26', title: 'Maulid un-Nabi (TENTATIVE)', type: 'holiday' },
@@ -209,9 +213,12 @@ const Calendar = ({ isDark }: { isDark: boolean }) => {
 };
 
 // --- AI SERVICE ---
-const GET_SYSTEM_PROMPT = (mode: ChatMode, college: string, studentId?: string) => `
+const GET_SYSTEM_PROMPT = (mode: ChatMode, college: string, studentId?: string) => {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  return `
 You are the "MMSU Stallion AI Companion," the EXCLUSIVE academic assistant for Mariano Marcos State University (MMSU).
-Today is January 20, 2026. 2nd Semester AY 2025-2026.
+Today is ${dateStr}.
 
 OPERATIONAL RULES:
 1. FOCUS: Only MMSU-related academic and campus topics.
@@ -219,6 +226,7 @@ OPERATIONAL RULES:
 3. CONTEXT: User belongs to ${college}.
 ${mode === 'TUTORING' ? `4. TUTOR MODE: You are mentoring Student ${studentId}. Provide pedagogical support, concept breakdowns, and study advice.` : ''}
 `;
+};
 
 // --- COMPONENTS ---
 
@@ -231,7 +239,14 @@ const NavDock = ({ active, onSet }: { active: Tab, onSet: (t: Tab) => void }) =>
       { id: 'tutors', icon: 'fa-user-graduate', label: 'Tutor' }
     ].map(item => (
       <button key={item.id} onClick={() => onSet(item.id as Tab)} className={`flex flex-col items-center gap-1 transition-all ${active === item.id ? 'text-mmsu-gold scale-110 sm:scale-125' : 'text-slate-400 hover:text-mmsu-gold'}`}>
-        <i className={`fas ${item.icon} text-base sm:text-lg`}></i>
+        <div className="relative">
+          <i className={`fas ${item.icon} text-base sm:text-lg`}></i>
+          {item.id === 'calendar' && (
+            <span className="absolute inset-0 flex items-center justify-center text-[6px] font-black mt-0.5 text-mmsu-green dark:text-mmsu-gold">
+              {new Date().getDate()}
+            </span>
+          )}
+        </div>
         <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-widest">{item.label}</span>
       </button>
     ))}
@@ -404,7 +419,10 @@ const App = () => {
               <div className="relative z-10 space-y-8">
                 <div className="inline-flex items-center gap-3 bg-mmsu-gold/20 px-4 py-1.5 rounded-full border border-mmsu-gold/30">
                   <span className="w-2 h-2 bg-mmsu-gold rounded-full animate-pulse"></span>
-                  <span className="text-mmsu-gold text-[9px] font-black uppercase tracking-widest">Foundation Day Active</span>
+                  <span className="text-mmsu-gold text-[9px] font-black uppercase tracking-widest">
+                    {new Date().getMonth() === 0 ? 'Foundation Month Active' : 
+                     new Date().getMonth() === 3 ? 'Midyear Preparations' : 'Stallion Portal Live'}
+                  </span>
                 </div>
                 <h2 className="text-4xl md:text-7xl font-black leading-[1.1] tracking-tighter">Rise Higher, <br/><span className="text-mmsu-gold">Stallion {user.name.split(' ')[0]}!</span></h2>
                 <p className="opacity-70 max-w-xl font-medium text-lg leading-relaxed">{user.college}</p>
