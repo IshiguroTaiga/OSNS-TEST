@@ -6,6 +6,6 @@ References:
 Ilocos Norte Tourism Chatbot https://apaydakaditoy.infinityfreeapp.com/
 README - [Google Docs ](https://docs.google.com/document/d/1HafQPwNlPL8PS1gSfVPaiZ6b_-KdQL0BWmFCbCefGDM/edit?usp=drive_link)
 
-https://osns-test.vercel.app/
+https://osns-test-boxktfim4-ishigurotaigas-projects.vercel.app/
 
 https://qwert-ashen.vercel.app/
